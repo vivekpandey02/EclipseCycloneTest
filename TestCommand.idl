@@ -1,21 +1,3 @@
-module DDS {
- struct Duration_t {
-        long sec;
-        unsigned long nanosec;
-    };
-	
-	struct Time_t {
-#ifdef OSPL_DDS_Y2038_READY
-        long long sec;
-#else
-        long sec;
-#endif
-        unsigned long nanosec;
-    };
-
-};
-
-
 module TestCommand
 {
 
@@ -25,7 +7,6 @@ module TestCommand
         VALUEKIND_LONG,
         VALUEKIND_FLOAT,
         VALUEKIND_BOOLEAN,
-        VALUEKIND_TIME
     };
 
     enum CommandKind {
@@ -42,8 +23,6 @@ module TestCommand
             float fValue;
         case VALUEKIND_BOOLEAN:      /* Value is a boolean */
             boolean bValue;
-        case VALUEKIND_TIME:         /* Value is a timestamp */
-            DDS::Time_t tValue;
     };
 
     /* Generic key:value type, where value is an union supporting various kinds of values */
@@ -53,9 +32,9 @@ module TestCommand
     };
 
     union Kind switch(CommandKind) {
-        case ADD_COMMAND:                /* Record command */
+        case ADD_COMMAND:                /* Add command */
             sequence<KeyValue> addCmd;
-        case REMOVE_COMMAND:
+        case REMOVE_COMMAND:             /* Remove command */
             sequence<KeyValue> rmvCmd;
     };
 
