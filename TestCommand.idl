@@ -6,7 +6,7 @@ module TestCommand
         VALUEKIND_STRING,
         VALUEKIND_LONG,
         VALUEKIND_FLOAT,
-        VALUEKIND_BOOLEAN,
+        VALUEKIND_BOOLEAN
     };
 
     enum CommandKind {
