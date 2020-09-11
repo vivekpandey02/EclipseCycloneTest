@@ -1,0 +1,71 @@
+module DDS {
+ struct Duration_t {
+        long sec;
+        unsigned long nanosec;
+    };
+	
+	struct Time_t {
+#ifdef OSPL_DDS_Y2038_READY
+        long long sec;
+#else
+        long sec;
+#endif
+        unsigned long nanosec;
+    };
+
+};
+
+
+module TestCommand
+{
+
+    /* ValueKind is the discriminator of the 'value' union of a KeyValue */
+    enum ValueKind {
+        VALUEKIND_STRING,
+        VALUEKIND_LONG,
+        VALUEKIND_FLOAT,
+        VALUEKIND_BOOLEAN,
+        VALUEKIND_TIME
+    };
+
+    enum CommandKind {
+        ADD_COMMAND,
+        REMOVE_COMMAND
+    };
+
+    union Value switch(ValueKind) {
+        case VALUEKIND_STRING:       /* Value is a string */
+            string sValue;
+        case VALUEKIND_LONG:         /* Value is a long number */
+            long lValue;
+        case VALUEKIND_FLOAT:        /* Value is a floating-point number */
+            float fValue;
+        case VALUEKIND_BOOLEAN:      /* Value is a boolean */
+            boolean bValue;
+        case VALUEKIND_TIME:         /* Value is a timestamp */
+            DDS::Time_t tValue;
+    };
+
+    /* Generic key:value type, where value is an union supporting various kinds of values */
+    struct KeyValue {
+        string keyval;                   /* String key */
+        Value value;
+    };
+
+    union Kind switch(CommandKind) {
+        case ADD_COMMAND:                /* Record command */
+            sequence<KeyValue> addCmd;
+        case REMOVE_COMMAND:
+            sequence<KeyValue> rmvCmd;
+    };
+
+    struct TestCommandMsg
+    {
+        long command_Id;
+	Kind kind;
+    };
+#pragma keylist TestCommandMsg command_Id
+};
+
+
+
